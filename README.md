@@ -1,25 +1,15 @@
 # Weather Monitoring System
 
-A robust and scalable weather monitoring system that periodically fetches weather data, manages user configurations, and raises alerts based on predefined thresholds. The system leverages SQLAlchemy for database interactions, Streamlit for the user interface, and the `schedule` library to handle background scheduling tasks efficiently.
-
-## Table of Contents
-
-- [Weather Monitoring System](#weather-monitoring-system)
-  - [Table of Contents](#table-of-contents)
-  - [Features](#features)
-  - [Architecture \& Design Decisions](#architecture--design-decisions)
-    - [WeatherData Table Management](#weatherdata-table-management)
-    - [Alerts management.](#alerts-management)
-    - [Job Configuration \& Alert Mechanism](#job-configuration--alert-mechanism)
-    - [Running the UI and the backend logic in one dockerfile.](#running-the-ui-and-the-backend-logic-in-one-dockerfile)
-  - [Running instructions](#running-instructions)
-    - [UTs](#uts)
+A real-time weather monitoring application built with Python, Streamlit, and PostgreSQL, containerized using Docker and Docker Compose.
 
 ## Features
 
-- **Periodic Weather Data Retrieval:** Fetches the latest weather information at regular intervals.
-- **Data Management:** Automatically cleans up old weather data to maintain database efficiency.
-- **Alerting System:** Raises alerts based on user-defined temperature thresholds and consecutive updates.
+- **Real-Time Data Fetching:** Retrieves weather data for multiple cities using the OpenWeather API.
+- **Database Storage:** Stores weather data and daily summaries in a PostgreSQL database.
+- **User Interface:** Provides a Streamlit web app for data visualization and interaction.
+- **Alerts:** Users can set temperature thresholds to receive alerts.
+- **Data Export:** Option to download weather data as CSV files.
+- **Scheduled Tasks:** Automated data retrieval and cleanup operations.
 
 ## Architecture & Design Decisions
 
@@ -43,27 +33,97 @@ Since the user can change the value anytime, and the API job needs to know the l
 
 When the weather API job runs, it will read the latest user configuration from the user_config table and then check for alerts with that particular configuration.
 
-### Job Configuration & Alert Mechanism
+## Prerequisites
 
-The system employs background jobs to handle data retrieval and alerting:
+- [Docker](https://docs.docker.com/get-docker/) installed.
+- [Docker Compose](https://docs.docker.com/compose/install/) installed.
+- OpenWeather API key. Sign up at [OpenWeather](https://openweathermap.org/) to obtain one.
 
-- **Data Retrieval Job:** Fetches the latest weather information every **5 minutes**. This ensures that the system always has up-to-date weather data for analysis and alerting.
-- **Clean up job:** runs every day to remove weather data entries older **2 days**.
+## Setup Instructions
 
-### Running the UI and the backend logic in one dockerfile.
+### **1. Clone the Repository**
 
-The most ideal way is to run two dockerfiles one for the streamlit app and
-one for the backend scheduler - but as a more lightweight solution, I use
-multiprocessing library to run two processes - one that spins up the streamlit
-ui, and one that runs the weather API job. This allows us to get away with a single
-docker file.
-
-  `
-## Running instructions
-
-### UTs
-
-UTs are defined in the folder `/test`. We use unittests to write it. Please run the command:
 ```bash
- python -m unittest discover -s test
+git clone https://github.com/nidhii-24/weather_monitoring_system.git
+cd WEATHER_MONITORING_SYSTEM
 ```
+
+### **2. Create a `.env` File**
+
+Create a `.env` file in the project root directory.
+
+Open `.env` and fill in your own values:
+
+**Note:** Replace `your_db_password` and `your_openweather_api_key` with your actual database password and API key.
+
+### **3. Build and Start the Docker Containers**
+
+```bash
+docker-compose up --build
+```
+
+This command builds the Docker images and starts the `web`, `worker`, and `db` services.
+
+### **4. Access the Application**
+
+Open your web browser and navigate to:
+
+```
+http://localhost:8501
+```
+
+## Usage
+
+### **Settings Sidebar**
+
+- **Select Temperature Unit:** Choose between Celsius, Fahrenheit, or Kelvin.
+- **High Temperature Threshold:** Set the temperature threshold for alerts.
+- **Consecutive Updates:** Specify the number of consecutive updates that must exceed the threshold to trigger an alert.
+
+### **Latest Weather Data**
+
+- Displays the most recent weather data for the selected city, including:
+  - **Main Weather Condition**
+  - **Temperature**
+  - **Feels Like Temperature**
+  - **Data Update Time**
+
+### **Interactive Temperature Trends**
+
+- **Select City:** Use the dropdown to select a city.
+- **Graph:** View the average temperature over time for the selected city.
+- **Interactivity:** Hover over the graph to see specific data points.
+
+### **Alerts**
+
+- Alerts are displayed if the temperature exceeds the set threshold for the specified number of consecutive updates.
+
+### **Download Data**
+
+- **Download as CSV:** Export the weather data for the selected city.
+
+## Stopping the Application
+
+To stop the application and remove the containers, run:
+
+```bash
+docker-compose down
+```
+
+## Troubleshooting
+
+### **No Data Available for Visualization**
+
+- **Possible Cause:** The application may not have collected enough data yet.
+- **Solution:** Wait a few minutes for the worker service to fetch and process data.
+
+
+### **Running Tests**
+
+- Navigate to the project directory.
+- Run tests using:
+
+  ```bash
+  python -m unittest discover tests
+  ```
+
