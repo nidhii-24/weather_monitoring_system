@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: weather_web
+    command: ["streamlit", "run", "streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+    ports:
+      - "8501:8501"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    volumes:
+      - .:/app  # Optional: Mount code for development purposes
+
+  worker:
+    build: .
+    container_name: weather_worker
+    command: ["python", "main.py"]
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  db:
+    image: postgres:13
+    container_name: weather_db
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"  # Optional: Expose port for external access
+
+volumes:
+  db_data:
