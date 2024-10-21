@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   web:
     build: .
@@ -9,10 +7,9 @@ services:
       - "8501:8501"
     depends_on:
       - db
+      - worker
     env_file:
       - .env
-    volumes:
-      - .:/app  # Optional: Mount code for development purposes
 
   worker:
     build: .
@@ -34,7 +31,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
-      - "5433:5432"  # Optional: Expose port for external access
+      - "5433:5432"
 
 volumes:
   db_data:

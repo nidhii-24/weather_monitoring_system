@@ -48,15 +48,7 @@ git clone https://github.com/nidhii-24/weather_monitoring_system.git
 cd WEATHER_MONITORING_SYSTEM
 ```
 
-### **2. Create a `.env` File**
-
-Create a `.env` file in the project root directory.
-
-Open `.env` and fill in your own values:
-
-**Note:** Replace `your_db_password` and `your_openweather_api_key` with your actual database password and API key.
-
-### **3. Build and Start the Docker Containers**
+### **2. Build and Start the Docker Containers**
 
 ```bash
 docker-compose up --build
@@ -64,7 +56,7 @@ docker-compose up --build
 
 This command builds the Docker images and starts the `web`, `worker`, and `db` services.
 
-### **4. Access the Application**
+### **3. Access the Application**
 
 Open your web browser and navigate to:
 

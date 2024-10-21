@@ -269,7 +269,7 @@ def store_weather_data(weather_data_list: dict[str, Any]):
             index_elements=["city", "dt"], set_=update_columns
         )
 
-        session.execute(stmt)
+        session.execute(upsert_stmt)
         session.commit()
         print(f"Successfully upserted {len(weather_data_list)} weather data entries.")
     except Exception as e:
@@ -329,7 +329,7 @@ def read_user_config() -> UserConfig:
     except Exception as e:
         print(f"Error reading user config: {e}")
         return None
-    
+
 
 
 def get_latest_weather_data_for_city(city: str) -> WeatherData:

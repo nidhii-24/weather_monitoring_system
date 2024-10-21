@@ -48,8 +48,10 @@ def convert_temperature_series(temp_series: pd.DataFrame, to_unit: str) -> pd.Da
         print("invalid dataframe passed in")
         return temp_series
     if to_unit == TEMP_UNIT_CELSIUS:
+        print("converting to celsius")
         return temp_series.apply(kelvin_to_celsius)
     elif to_unit == TEMP_UNIT_FAHRENHEIT:
+        print("converting to f")
         return temp_series.apply(kelvin_to_fahrenheit)
     elif to_unit == TEMP_UNIT_KELVIN:
         return temp_series

@@ -6,7 +6,7 @@ from config import OPENWEATHER_API_KEY, CITIES, OPENWEATHER_API_URL
 def get_weather_data(city):
     """ """
     params = {"q": city, "appid": OPENWEATHER_API_KEY}
-    response = requests.get(OPENWEATHER_API_URL, params=params,verify=False)
+    response = requests.get(OPENWEATHER_API_URL, params=params)
     if response.status_code == 200:
         data = response.json()
         weather_info = {
